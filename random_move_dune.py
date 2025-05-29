@@ -3,7 +3,7 @@ import pygame
 import pygame.locals
 import sys
 import random
-
+#convert to be an import
 width, height = 1000, 750
 screen = pygame.display.set_mode((width, height))
 wave_width = screen.get_width() // 5
@@ -23,7 +23,7 @@ class Dune:
             self.points.append(((x+(order*wave_width)), self.dune_height * math.sin(theta) + d))
 
     def display(self):
-        pygame.draw.lines(screen, (255, 0, 0), False, self.points)
+        pygame.draw.lines(screen, (255, 0, 0), False, self.points,2)
     def movement(self,movepos:float):
         for i in range(len(self.points)):
             update=list(self.points[i])
@@ -63,13 +63,8 @@ def main():
     while True:
         screen.fill("#000000")
         for dune in current_dunes:
-            dune.movement(1)
+            dune.movement(2)
             dune.display()
-        # for r in range(screen.get_width()//5):
-        #     for i in range(7):
-        #         current_dunes[i].movement(r/30)
-        #         current_dunes[i].display()
-        # 
         if current_dunes[0].points[-1][0] < 0:
             current_dunes.pop(0)
             current_dunes.append(Dune(random.randrange(40, 100), wave_width, 5))
@@ -83,7 +78,8 @@ def main():
                 sys.exit()
         pygame.display.flip()
         fps_clock.tick(fps)
-
+        
 
 if __name__ == "__main__":
     main()
+    
