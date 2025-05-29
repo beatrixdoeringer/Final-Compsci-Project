@@ -1,0 +1,41 @@
+import math
+import pygame
+import sys
+
+def dune_generation(surface: pygame.Surface, dune_height: float, dune_width: float, phase: float):
+    k = dune_height + 300  
+    h = 20                
+    points = []
+    for x in range(surface.get_width()):
+        y = dune_height * math.sin((x + phase - h) / dune_width) + k
+        points.append((x, y))
+    pygame.draw.lines(surface, (255, 255, 0), False, points, 10)
+
+def main():
+    pygame.init()
+    width, height = 1000, 500
+    screen = pygame.display.set_mode((width, height))
+    fps_clock = pygame.time.Clock()
+    fps = 60
+
+    phase = 0             
+    speed = 2              
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        screen.fill((0, 0, 0))
+
+        dune_generation(screen, dune_height=75, dune_width=45, phase=phase)
+
+       
+        phase += speed
+
+        pygame.display.flip()
+        fps_clock.tick(fps)
+
+if __name__ == "__main__":
+    main()
