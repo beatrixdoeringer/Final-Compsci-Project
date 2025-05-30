@@ -13,14 +13,38 @@ class Dune:
     def __init__(self, dune_height: float, horizontal_dis: float,order:int):
         self.dune_height = dune_height
         self.horizontal_dis = horizontal_dis
-
+        self.offset = 0
+        self.speed = 0
+        self.acceleration = 200
         self.points = []
         d = screen.get_height() - self.dune_height
         for x in range(wave_width):
             
-            theta = ((-2*x)) * math.pi / wave_width
-           
+            # theta = (((-1.5*x)) * math.pi - math.pi/8) / wave_width
+            # newpoints=((x+(order*wave_width)), self.dune_height * math.sin(theta) + d) 
+            # theta = (((-1*x)) * math.pi - math.pi/8) / wave_width
+            # contradict=((x+(order*wave_width)), self.dune_height * math.sin(theta) + d)
+            # contradict,newpoints=set(contradict),set(newpoints)
+            # newpoints=newpoints.difference_update(contradict)
+            # self.points.append(list(newpoints))
+            theta = (((-2*x)) * math.pi - math.pi/8) / wave_width         
             self.points.append(((x+(order*wave_width)), self.dune_height * math.sin(theta) + d))
+
+    # def update(self):
+    #     self.speed += self.acceleration * 1/60
+    #     self.offset += self.speed * 1/60
+
+    # def get_height_at(self, x: float) -> float:
+    #     input_x = x + self.offset
+    #     return self.dune_height * math.sin((input_x - self.dune_height) / (screen.get_width()/5)) 
+    
+    # def get_velocity_at(self, x: float) -> float:
+    #     input_x = x + self.offset
+    #     return self.dune_height * self.speed / (screen.get_width()/5) * math.cos((input_x - self.dune_height) / (screen.get_width()/5))
+
+    # def get_acceleration_at(self, x: float) -> float:
+    #     input_x = x + self.offset
+    #     return -self.dune_height * self.speed ** 2 / (screen.get_width()/5) ** 2 * math.sin((input_x - self.dune_height) / (screen.get_width()/5)) + self.dune_height * self.acceleration / (screen.get_width()/5) * math.cos((input_x - self.dune_height) / (screen.get_width()/5))
 
     def display(self):
         pygame.draw.lines(screen, (255, 0, 0), False, self.points,2)
@@ -59,15 +83,14 @@ def main():
         fifth,
         off_right,
     ]
-
-    while True:
-        screen.fill("#000000")
+    while True:  
+        screen.fill((0,0,0))
         for dune in current_dunes:
             dune.movement(2)
             dune.display()
-        if current_dunes[0].points[-1][0] < 0:
-            current_dunes.pop(0)
-            current_dunes.append(Dune(random.randrange(40, 100), wave_width, 5))
+            if current_dunes[0].points[-1][0] < 0:
+                current_dunes.pop(0)
+                current_dunes.append(Dune(random.randrange(40, 100), wave_width, 5))
 
         # actual code
         # next session reminders: The code is broken, it seems to get a very limited amount of points for each sin wave, and the process for displacing them is messed up.
