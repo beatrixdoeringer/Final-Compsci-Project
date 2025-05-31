@@ -75,9 +75,9 @@ class Ball:
             else:
                 self.vy += self.gravity
             
-            #self.y = self.in_air_y0 + self.in_air_v0 * self.in_air_time + 0.5 * self.gravity*self.gravity_multiplier*self.in_air_time ** 2
-            self.vy += self.gravity/60
-            self.y += self.vy/60
+            self.y = self.in_air_y0 + self.in_air_v0 * self.in_air_time + 0.5 * self.gravity*self.gravity_multiplier*self.in_air_time ** 2
+            # self.vy += self.gravity/60
+            # self.y += self.vy/60
             self.x += self.vx
 
             terrain_y = dune_y(self.x) - self.radius*0
