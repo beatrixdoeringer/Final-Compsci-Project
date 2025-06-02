@@ -10,11 +10,17 @@ class Dunes:
         self.surface = surface
         self.dune_height = dune_height
         self.dune_width = dune_width
-        self.k = 0.5 * dune_height + 300
+        self.k = 0.5 * dune_height + 450
         self.h = 20
         self.offset = 0
         self.speed = 0
         self.acceleration = 200
+
+        # self.points = []
+        # d = surface.get_height() - self.dune_height
+        # for x in range(dune_width):
+        #     theta = (((-2*x)) * math.pi - math.pi/8) / dune_width         
+        #     self.points.append(((x+(order*dune_width)), self.dune_height * math.sin(theta) + d))
         
     def update(self):
         self.speed += self.acceleration * 1/60
@@ -50,7 +56,7 @@ class Dunes:
         pygame.draw.lines(self.surface, (255, 255, 0), False, points, 10)
 
 class Ball:
-    def __init__(self, x, y, radius=20):
+    def __init__(self, x, y, radius=15):
         self.x = x
         self.y = y
         self.radius = radius
@@ -65,25 +71,32 @@ class Ball:
         self.in_air_y0 = 0.0 
         self.crash = False
         self.reached_peak = False
-        self.gravity_multiplier = 1
+        self.gravity_multiplier_diving = 1.0
+        self.gravity_multiplier_screen = 1.0
 
     def update(self, dune_y, dune_v, dune_a, is_diving):
         if self.in_air:
             self.in_air_time += 1/60
-            if is_diving:
-                self.gravity * 10
+
+            # if self.y < 0:
+            #     self.gravity_multiplier_screen = 10
+
+            if self.y < 100:
+                self.gravity_multiplier_screen = 200/abs(self.y + 100)
+
             else:
-                self.vy += self.gravity
+                self.gravity_multiplier_screen = 1.0
+            #self.vy = dune_v(self.x)
             
             #self.y = self.in_air_y0 + self.in_air_v0 * self.in_air_time + 0.5 * self.gravity*self.gravity_multiplier*self.in_air_time ** 2
-            self.vy += self.gravity/60
+            self.vy += self.gravity*self.gravity_multiplier_diving*self.gravity_multiplier_screen/60
             self.y += self.vy/60
-            self.x += self.vx
+            self.x += self.vx/60
 
-            terrain_y = dune_y(self.x) - self.radius*0
-            if self.y > terrain_y - self.radius*0:
+            terrain_y = dune_y(self.x)
+            if self.y > terrain_y + self.radius:
                 if dune_v(self.x) < 0 and self.in_air_time > 0.8:
-                    self.y = terrain_y - self.radius*0
+                    self.y = terrain_y
                     self.vx = 0
                     self.vy = 0
                     self.in_air = False
@@ -94,7 +107,7 @@ class Ball:
                     self.vy = 0
                     self.in_air = False
             
-                
+             
         
         else:
             if dune_a(self.x) > self.gravity:
@@ -103,6 +116,8 @@ class Ball:
                 self.in_air_v0 = dune_v(self.x)
                 self.vy = self.in_air_v0
                 self.in_air_y0 = dune_y(self.x-self.radius*0)
+                self.gravity_multiplier_diving = 1.0
+                self.gravity_multiplier_screen = 1.0
             
             else:
                 self.y = dune_y(self.x)
@@ -118,57 +133,99 @@ def main():
     screen = pygame.display.set_mode((width, height))
 
     keys_held: set[int] = set()
-    dune = Dunes(screen, dune_height=100, dune_width=50)
+    dune = Dunes(screen, dune_height=70, dune_width=40)
     
     ball = Ball(x=width // 2, y=300)
 
     score = 0
     score_increment = 10
+    menu = True
+    playing = False
+    game_over = False
 
     while True:
-        font = pygame.font.Font(None, 36)
-        screen.fill((0, 0, 0))
-        dune.draw()
+        if menu:
+            font = pygame.font.Font(None, 100)
+            fonttwo=pygame.font.Font(None, 50)
+            score_text = font.render('Ball Jump', True, (0, 255, 255))
+            enter_text=fonttwo.render('Press Return to Start!', True, (0, 255, 255))
+            screen.blit(score_text, (250, 250))
+            screen.blit(enter_text,(250, 350))
         
-        if ball.crash:
-            pygame.time.delay(1000)
-            pygame.quit()
-            sys.exit()
+            if pygame.key.get_pressed()[pygame.K_RETURN]:
+                screen.fill((0,0,0))
+                menu=False
+                ball = Ball(x=width // 2, y=300)
+                playing=True
+            for event in pygame.event.get():
+                if event.type == pygame.locals.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
-        for event in pygame.event.get():
-            if event.type == pygame.locals.QUIT or ball.crash:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                keys_held.add(event.key)
-                if ball.in_air_time > 0.2:
-                    ball.gravity_multiplier = 5.0
+        if game_over:
+            screen.fill((0,0,0))
+            font = pygame.font.Font(None, 100)
+            game_over_text = font.render('Game Over!', True, (0, 255, 255))
+            score_text=fonttwo.render(f'score = {score}', True, (0, 255, 255))
+            screen.blit(game_over_text, (200, 250))
+            screen.blit(score_text,(400, 350))
+            if pygame.key.get_pressed()[pygame.K_RSHIFT]:
+                screen.fill((0,0,0))
+                menu = True
+                game_over = False
+                
+            for event in pygame.event.get():
+                if event.type == pygame.locals.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
-            elif event.type == pygame.KEYUP:
-                keys_held.discard(event.key)
-                ball.gravity_multiplier = 1.0
-
-        if pygame.K_SPACE in keys_held or ball.in_air:
-            dune.update()
-
-        else:
-            dune.speed = 100
-            dune.update()
+        if playing:
         
-        score_text = font.render(f'Score: {score}', True, (255, 255, 255))
-        screen.blit(score_text, (10, 10))
+            font = pygame.font.Font(None, 36)
+            screen.fill((0, 0, 0))
+            dune.draw()
         
-        is_diving = pygame.K_SPACE in keys_held
-        ball.update(lambda x: dune.get_height_at(x), lambda x: dune.get_velocity_at(x), lambda x: dune.get_acceleration_at(x), is_diving) #lamba x: dune.get_acceleration_at(x),
+            if ball.crash:
+                playing = False
+                game_over = True
+
+            for event in pygame.event.get():
+                if event.type == pygame.locals.QUIT or ball.crash:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    keys_held.add(event.key)
+                    if ball.in_air_time > 0.2:
+                        ball.gravity_multiplier_diving = 5.0
+
+                elif event.type == pygame.KEYUP:
+                    keys_held.discard(event.key)
+                    ball.gravity_multiplier_diving = 1.0
+
+            if pygame.K_SPACE in keys_held or ball.in_air:
+                dune.update()
+
+            else:
+                dune.speed = 100
+                dune.update()
         
-        if ball.y <= 200 and not ball.reached_peak:
-            score += score_increment
-            ball.reached_peak = True
+            score_text = font.render(f'Score: {score}', True, (255, 255, 255))
+            screen.blit(score_text, (10, 10))
 
-        if not ball.in_air:
-            ball.reached_peak = False
+        # score_text = font.render(f'ball.in_air: {ball.in_air}', True, (255, 255, 255))
+        # screen.blit(score_text, (10, 10))
+        
+            is_diving = pygame.K_SPACE in keys_held
+            ball.update(lambda x: dune.get_height_at(x), lambda x: dune.get_velocity_at(x), lambda x: dune.get_acceleration_at(x), is_diving) #lamba x: dune.get_acceleration_at(x),
+        
+            if ball.y <= 350 and not ball.reached_peak:
+                score += score_increment
+                ball.reached_peak = True
 
-        ball.draw(screen)
+            if not ball.in_air:
+                ball.reached_peak = False
+
+            ball.draw(screen)
 
         pygame.display.flip()
         fps_clock.tick(fps)
@@ -177,13 +234,12 @@ if __name__ == "__main__":
     main()
 
 
-    #make ball able to dive
-    #make the ball not go higher when you just hold down the space bar
-    #make the scren zoom out when the ball goes rlly high
+    #make game and score completely restart when you lose the game
+    #put random dunes into the code
+    #make the ball not shoot down when it hits top of the screen
+    #make ball and dunes smaller
+    #make score go up more when you hit top of screen??
+
     
     #add states to start playing the game and ending the game
-    #bananas
-
-    #randomness of dunes
-    #obstacles
     
