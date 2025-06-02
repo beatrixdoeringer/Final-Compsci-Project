@@ -17,7 +17,7 @@ class Dune:
         self.speed = 0
         self.acceleration = 200
         self.points = []
-        d = screen.get_height() - self.dune_height
+        d = screen.get_height() - self.dune_height-(160)
         for x in range(wave_width):
             
             # theta = (((-1.5*x)) * math.pi - math.pi/8) / wave_width
@@ -27,8 +27,10 @@ class Dune:
             # contradict,newpoints=set(contradict),set(newpoints)
             # newpoints=newpoints.difference_update(contradict)
             # self.points.append(list(newpoints))
-            theta = (((-2*x)) * math.pi - math.pi/8) / wave_width         
-            self.points.append(((x+(order*wave_width)), self.dune_height * math.sin(theta) + d))
+            theta = (((-1*x)) * math.pi - math.pi/8) / wave_width         
+            self.points.append(((x+(order*wave_width)), (self.dune_height * math.sin(theta) + d)+((self.dune_height*3) * math.sin(theta) + d)))
+                                # +( self.dune_height * math.sin(theta) + d)))
+                            #+((((-1.5*x)) * math.pi - math.pi/8) / wave_width))
 
     # def update(self):
     #     self.speed += self.acceleration * 1/60
