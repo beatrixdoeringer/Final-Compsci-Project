@@ -18,7 +18,6 @@ class Dune:
         self.speed = 2
         self.points = []
         
-        
         self.phase_offset = math.asin(max(-1, min(1, (start_y - (height - dune_height)) / dune_height)))
 
         for i in range(num_points + 1):
@@ -26,7 +25,6 @@ class Dune:
             theta = (2 * math.pi * (x - start_x) / wave_width) + self.phase_offset
             y = dune_height * math.sin(theta) + (height - dune_height)
             self.points.append([x, y])
-
 
     def movement(self):
         for point in self.points:
@@ -37,7 +35,6 @@ class Dune:
 
     def get_end_point(self):
         return self.points[-1] #need this to make end points to match up
-
 
 
 def create_connected_dune(previous_dune):

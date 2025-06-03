@@ -252,9 +252,11 @@ def main():
             screen.fill((65, 215, 255))
             font = pygame.font.Font(None, 100)
             game_over_text = font.render('Game Over!', True, (255, 255, 255))
-            score_text=fonttwo.render(f'score: {score}', True, (255, 255, 255))
+            score_text=fonttwo.render(f'Score: {score}', True, (255, 255, 255))
+            try_again_text=fonttwo.render('Press Shift to Try Again', True, (255, 255, 255))
             screen.blit(game_over_text, (200, 250))
-            screen.blit(score_text,(400, 350))
+            screen.blit(score_text,(340, 350))
+            screen.blit(try_again_text,(200, 425))
             if pygame.key.get_pressed()[pygame.K_RSHIFT]:
                 screen.fill((0,0,0))
                 menu = True
@@ -266,7 +268,7 @@ def main():
                     sys.exit()
 
         if playing:
-            font = pygame.font.Font(None, 36)
+            font = pygame.font.Font(None, 100)
             screen.fill((65, 215, 255))
             dune.draw()
         
@@ -294,8 +296,8 @@ def main():
                 dune.speed = 100
                 dune.update()
         
-            score_text = font.render(f'Score: {score}', True, (255, 255, 255))
-            screen.blit(score_text, (10, 10))
+            score_playing_text = font.render(f'{score}', True, (255, 255, 255))
+            screen.blit(score_playing_text, (377, 10))
         
             ball.update(lambda x: dune.get_height_at(x), lambda x: dune.get_velocity_at(x), lambda x: dune.get_acceleration_at(x))
         
@@ -317,4 +319,6 @@ if __name__ == "__main__":
 #add graphics to game and state pages
 #figure out how to shift the random dunes up a bit
 #somehow make the game a little easier
+#add bananas following at a set speed
+#fix size of screen
     
