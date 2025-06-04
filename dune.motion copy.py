@@ -21,7 +21,7 @@ class Intro_dunes:
         self.phase_offset = math.asin(max(-1, min(1, (start_y - (height - dune_height)) / dune_height)))
 
         for i in range(num_points + 1):
-            x = start_x + i * (wave_width / num_points) #so that the dunes line up
+            x = start_x + i * (wave_width / num_points)
             theta = (2 * math.pi * (x - start_x) / wave_width) + self.phase_offset
             y = dune_height * math.sin(theta) + (height - dune_height)
             self.points.append([x, y])
@@ -59,12 +59,6 @@ class Dunes:
         self.offset = 0
         self.speed = 0
         self.acceleration = 5
-
-        # self.points = []
-        # d = surface.get_height() - self.dune_height
-        # for x in range(dune_width):
-        #     theta = (((-2*x)) * math.pi - math.pi/8) / dune_width         
-        #     self.points.append(((x+(order*dune_width)), self.dune_height * math.sin(theta) + d))
         
     def update(self):
         self.speed += self.acceleration * 1/60
@@ -125,15 +119,6 @@ class Ball:
     def update(self, dune_y, dune_v, dune_a):
         if self.in_air:
             self.in_air_time += 1/60
-
-            # if self.y < 0:
-            #     self.gravity_multiplier_screen = 10
-
-            # if self.y < 100:
-            #     self.gravity_multiplier_screen = 200/abs(self.y + 100)
-
-            # else:
-            #     self.gravity_multiplier_screen = 1.0
             
             if self.y < 100 and self.vy < 0:
                 self.vy_multiplier = abs(self.y/100)
@@ -141,8 +126,6 @@ class Ball:
             else:
                 self.vy_multiplier = 1.0
             
-            #self.vy = dune_v(self.x)
-            #self.y = self.in_air_y0 + self.in_air_v0 * self.in_air_time + 0.5 * self.gravity*self.gravity_multiplier*self.in_air_time ** 2
             self.vy += self.gravity*self.gravity_multiplier_diving*self.gravity_multiplier_screen/60
             self.vy *= self.vy_multiplier
             self.y += self.vy/60
@@ -197,8 +180,6 @@ def main():
     pygame.init()
     fps = 60
     fps_clock = pygame.time.Clock()
-    # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    # width, height = screen.get_size()
     width, height = 800, 600
     screen = pygame.display.set_mode((width, height))
 
@@ -319,7 +300,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-#add graphics to game and state pages
-#somehow make the game a little easier
+
 
     
