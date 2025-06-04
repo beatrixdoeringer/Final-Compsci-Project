@@ -133,7 +133,7 @@ class Ball:
 
             terrain_y = dune_y(self.x)
             if self.y > terrain_y + self.radius:
-                if dune_v(self.x) < -10 and self.in_air_time > 0.9 and self.vy > 10:
+                if dune_v(self.x) < -15 and self.in_air_time > 1 and self.vy > 15:
                     self.y = terrain_y
                     self.vx = 0
                     self.vy = 0
