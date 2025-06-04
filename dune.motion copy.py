@@ -9,7 +9,7 @@ width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 fps = 60
 fps_clock = pygame.time.Clock()
-wave_width = screen.get_width() // 2.6
+wave_width = screen.get_width() // 2.7
 
 class Intro_dunes:
     def __init__(self, dune_height: float, start_x: float, start_y: float, wave_width: int, num_points: int = 150):
