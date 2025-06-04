@@ -9,7 +9,7 @@ width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 fps = 60
 fps_clock = pygame.time.Clock()
-wave_width = screen.get_width() // 3.2
+wave_width = screen.get_width() // 2.6
 
 class Intro_dunes:
     def __init__(self, dune_height: float, start_x: float, start_y: float, wave_width: int, num_points: int = 150):
@@ -58,7 +58,7 @@ class Dunes:
         self.h = 20
         self.offset = 0
         self.speed = 0
-        self.acceleration = 200
+        self.acceleration = 5
 
         # self.points = []
         # d = surface.get_height() - self.dune_height
@@ -150,7 +150,7 @@ class Ball:
 
             terrain_y = dune_y(self.x)
             if self.y > terrain_y + self.radius:
-                if dune_v(self.x) < 0 and self.in_air_time > 0.8:
+                if dune_v(self.x) < -10 and self.in_air_time > 0.9 and self.vy > 10:
                     self.y = terrain_y
                     self.vx = 0
                     self.vy = 0
@@ -192,10 +192,13 @@ class Ball:
         self.gravity_multiplier_screen = 1.0
         self.vy_multiplier = 1.0
 
+
 def main():
     pygame.init()
     fps = 60
     fps_clock = pygame.time.Clock()
+    # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    # width, height = screen.get_size()
     width, height = 800, 600
     screen = pygame.display.set_mode((width, height))
 
@@ -233,10 +236,10 @@ def main():
 
             font = pygame.font.Font(None, 100)
             fonttwo=pygame.font.Font(None, 50)
-            score_text = font.render('Ball Jump', True, (255, 255, 255))
+            score_text = font.render('Hill Hop', True, (255, 255, 255))
             enter_text=fonttwo.render('Press Return to Start!', True, (255, 255, 255))
-            screen.blit(score_text, (250, 250))
-            screen.blit(enter_text,(250, 350))
+            screen.blit(score_text, (275, 250))
+            screen.blit(enter_text,(235, 350))
         
             if pygame.key.get_pressed()[pygame.K_RETURN]:
                 screen.fill((0,0,0))
@@ -301,7 +304,7 @@ def main():
         
             ball.update(lambda x: dune.get_height_at(x), lambda x: dune.get_velocity_at(x), lambda x: dune.get_acceleration_at(x))
         
-            if ball.y <= 400 and not ball.reached_peak:
+            if ball.y <= 350 and not ball.reached_peak:
                 score += score_increment
                 ball.reached_peak = True
 
@@ -317,8 +320,6 @@ if __name__ == "__main__":
     main()
 
 #add graphics to game and state pages
-#figure out how to shift the random dunes up a bit
 #somehow make the game a little easier
-#add bananas following at a set speed
-#fix size of screen
+
     

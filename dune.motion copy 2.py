@@ -270,3 +270,8 @@ if __name__ == "__main__":
     
     #add states to start playing the game and ending the game
     
+    #add graphics to game and state pages
+    #figure out how to shift the random dunes up a bit
+    #somehow make the game a little easier
+    #add bananas following at a set speed
+    #fix size of screen

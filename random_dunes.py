@@ -1,6 +1,5 @@
 import math
 import pygame
-import pygame.locals
 import sys
 import random
 
